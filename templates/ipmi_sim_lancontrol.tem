@@ -38,7 +38,7 @@
 prog=$0
 
 device=$1
-port=$2
+ipmi_ip=$2
 
 if [ "x$device" = "x" ]; then
     echo "No device given"
@@ -58,7 +58,8 @@ do_get() {
     while [ "x$1" != "x" ]; do
 	case $1 in
 	    ip_addr)
-		val=`ifconfig $device | grep '^ *inet ' | sed 's/.*inet \([0-9.]*\).*$/\1/'`
+		#val=`ifconfig $device | grep '^ *inet ' | sed 's/.*inet \([0-9.]*\).*$/\1/'`
+		val="$ipmi_ip"
 		if [ "x$val" = "x" ]; then
 		    val="0.0.0.0"
 		fi
@@ -116,7 +117,8 @@ do_get() {
 		;;
 
 	    backup_gw_mac_addr)
-		val="00:00:00:00:$port"
+		#val="00:00:00:00:$port"
+		val="00:00:00:00:62:3"
 		;;
 
 	    *)

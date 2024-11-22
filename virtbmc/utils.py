@@ -39,6 +39,29 @@ def get_netiface_ip(iface):
 def get_free_port(start, end):
     return [port for port in range(start, end) if is_port_free(port)]
 
+def get_br0_ips():
+    # 执行 shell 命令来获取 br0 网桥的 IP 地址
+    result = subprocess.run(
+        ["ip", "-4", "addr", "show", "br0"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True
+    )
+
+    # 检查命令是否执行成功
+    if result.returncode != 0:
+        print("Error:", result.stderr)
+        return []
+
+    # 使用正则表达式提取 IP 地址
+    ip_addresses = []
+    for line in result.stdout.splitlines():
+        if "inet " in line:
+            ip = line.split()[1].split("/")[0]
+            ip_addresses.append(ip)
+
+    return ip_addresses
+
 
 def is_port_open(port):
     if not is_port_free(port):
@@ -101,6 +124,7 @@ def run_cmd(cmd):
         cmdstr = ' '.join(cmd)
     else:
         cmdstr = cmd
+    print('cmdstr:',cmdstr)
     try:
         LOG.info("Run command: %s" % cmdstr)
         res = procutils.check_output(cmd)

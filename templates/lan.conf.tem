@@ -39,7 +39,8 @@ set_working_mc 0x20
 
     # A program to get and set the LAN configuration of the interface.
     #lan_config_program "/usr/local/bin/ipmi_sim_lancontrol eth0"
-    lan_config_program "&{lan_config_program} &{bridge} &{fake_ipmi_mac_port}"
+    #lan_config_program "&{lan_config_program} &{bridge} &{fake_ipmi_mac_port}"
+    lan_config_program "&{lan_config_program} &{bridge} &{listen_addr}"
   endlan
 
   chassis_control "&{chassis_control_program} 0x20"
@@ -74,3 +75,4 @@ set_working_mc 0x20
   user 1 true  ""        "test" user     10       none md2 md5 straight
   user 2 true  "ipmiusr" "test" admin    10       none md2 md5 straight
   user 3 true  "&{ipmiusr}" "&{ipmipass}" admin    10       none md2 md5 straight
+set_working_mc 0x30

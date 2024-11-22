@@ -123,6 +123,7 @@ class QemuBMCUnit(object):
     def run_bmc(self):
         if not self.is_bmc_running():
             cmd = [self.controller_script, 'start', self.ipmiusr, self.ipmipass]
+            #print('run_bmc:',cmd)
             utils.run_cmd(cmd)
             LOG.info('Start BMC: {} DONE.'.format(self.bmcname))
         else:
@@ -132,6 +133,7 @@ class QemuBMCUnit(object):
         try:
             if not self.is_vm_running():
                 cmd = [self.controller_script, 'startvm', self.ipmiusr, self.ipmipass]
+                #print('run_vm:',cmd)
                 utils.run_cmd(cmd)
                 LOG.info('Starting VM: {} DONE.'.format(self.qemuname))
             else:
@@ -181,10 +183,11 @@ class QemuBMCUnit(object):
         return status
 
     def get_bmc_status(self):
-        if utils.is_port_open(self.ipmi_port):
-            return RUNNING_STATUS
-        else:
-            return STOP_STATUS
+        return STOP_STATUS
+        #if utils.is_port_open(self.ipmi_port):
+        #    return RUNNING_STATUS
+        #else:
+        #    return STOP_STATUS
 
     def is_vm_running(self):
             if self.get_vm_status() == RUNNING_STATUS:
@@ -255,11 +258,12 @@ class QemuBMCUnit(object):
 
 BMC_FREE_PORT = utils.get_free_port(9000, 9500)
 VNC_FREE_PORT = utils.get_free_port(5900, 6000)
-
+BMC_BR0_IP = utils.get_br0_ips()
 
 def gen_config(args, num):
     global BMC_FREE_PORT
     global VNC_FREE_PORT
+    global BMC_BR0_IP
     db_items = VirtBMC.select().order_by(VirtBMC.number)
     if len(db_items) != 0:
         used_bmc_port = [item.ipmi_port for item in db_items]
@@ -272,8 +276,10 @@ def gen_config(args, num):
     res = {}
     res['number'] = num
     res['ipmi_sim'] = args.ipmi_sim
-    res['listen_addr'] = utils.get_netiface_ip(args.bridge)
-    ipmi_udp_port = BMC_FREE_PORT.pop(0)
+    #res['listen_addr'] = utils.get_netiface_ip(args.bridge)
+    res['listen_addr'] = BMC_BR0_IP.pop(0)
+    #ipmi_udp_port = BMC_FREE_PORT.pop(0)
+    ipmi_udp_port = 623
     serial_tcp_port = ipmi_udp_port
     res['ipmi_port'] = ipmi_udp_port
     res['serial_port'] = serial_tcp_port
@@ -425,5 +431,4 @@ def start(args):
         bmc_list = [item.uuid for item in VirtBMC.select()]
     else:
         bmc_list = args.start_bmc
-
-    map(_start, bmc_list)
+    process_map(_start, bmc_list)

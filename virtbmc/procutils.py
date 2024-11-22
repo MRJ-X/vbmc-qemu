@@ -117,7 +117,8 @@ def check_call_no_exception(cmds, **kwargs):
 
 
 def check_output(cmds, **kwargs):
-    if isinstance(cmds, basestring):
+    #if isinstance(cmds, basestring)
+    if isinstance(cmds, str):
         cmds = shlex.split(cmds)
     elif not hasattr(cmds, '__iter__'):
         raise Exception('Invalid type of commands: %s' % cmds)
@@ -150,14 +151,19 @@ def check_pid_alive(pidfile, progname):
 if __name__ == '__main__':
 
     # normal
-    print check_output('ls')
-    print check_output(['ls', '-a'])
+    #print check_output('ls')
+    #print check_output(['ls', '-a'])
+    print (check_output('ls'))
+    print (check_output(['ls', '-a']))
 
     with open('test_io_redirect1', 'w') as f:
-        print check_output('ls -ls', redirect_file=f)
+        #print check_output('ls -ls', redirect_file=f)
+        print (check_output('ls -ls', redirect_file=f))
 
     # exception:
     try:
-        print check_output('ls a_not_exsisting_file')
+        #print check_output('ls a_not_exsisting_file')
+        print (check_output('ls a_not_exsisting_file'))
     except Exception as e:
-        print e
+        #print e
+        print (e)

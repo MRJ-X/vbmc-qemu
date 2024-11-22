@@ -47,11 +47,15 @@ def init_argparser():
                         default='20G', help="specified image size used by qemu/kvm")
     create_parser.add_argument("-b", "--bridge", type=str, default='br0',
                         help="bridge interface name")
-    create_parser.add_argument("--qemu", type=str, default='/opt/qemu2.7/bin/qemu-system-x86_64',
+    #create_parser.add_argument("--qemu", type=str, default='/opt/qemu2.7/bin/qemu-system-x86_64',
+    #                    help="qemu binary execute path")
+    create_parser.add_argument("--qemu", type=str, default='/usr/local/bin/qemu-system-x86_64',
                         help="qemu binary execute path")
+    #create_parser.add_argument("--ipmi-sim", type=str, dest="ipmi_sim",
+    #                    default='/opt/openipmi/bin/ipmi_sim', help="ipmi-sim binary execute path")
     create_parser.add_argument("--ipmi-sim", type=str, dest="ipmi_sim",
-                        default='/opt/openipmi/bin/ipmi_sim', help="ipmi-sim binary execute path")
-    create_parser.add_argument("--memory", type=int, default=4096,
+                        default='/usr/bin/ipmi_sim', help="ipmi-sim binary execute path")
+    create_parser.add_argument("--memory", type=int, default=10240,
                         help="qemu VM memory size")
     create_parser.add_argument("--ncpu", type=int, default=1,
                         help="qemu VM cpu number")

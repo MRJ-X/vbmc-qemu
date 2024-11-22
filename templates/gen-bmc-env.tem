@@ -19,7 +19,9 @@ set_default_vals() {
     else
         order=${order:-nd}
         power=${power:-off}
-        bootdev=${bootdev:-pxe}
+        #bootdev=${bootdev:-pxe}
+        #bootdev=${bootdev:-disk}
+        bootdev='disk'
     fi
     cmd_pidfile=${cmd_pidfile:-&{qemu_pidfile}}
 }
@@ -50,7 +52,7 @@ gen_cmd() {
     local telnet_port=&{telnet_port}
     local vncport=&{vncport}
 
-    start_cmd="$qemu_program $(enable_kvm) -m $memory -smp $ncpu -boot $order -drive if=none,id=hd0,file=$disk -device virtio-scsi-pci,id=scsi0 -device scsi-hd,bus=scsi0.0,id=scsi0-0,drive=hd0 -netdev tap,id=network0,script=$ifup_script,downscript=$ifdown_script -device e1000,netdev=network0,mac=$ifmac -chardev socket,id=ipmi0,host=$listen_addr,port=$ipmi_port,reconnect=10 -device ipmi-bmc-extern,id=bmc0,chardev=ipmi0 -device isa-ipmi-bt,bmc=bmc0 -serial mon:telnet::$telnet_port,server,telnet,nowait -vnc :$vncport -daemonize --pidfile $cmd_pidfile"
+    start_cmd="$qemu_program $(enable_kvm) -m $memory -smp $ncpu  -bios /usr/local/share/OVMF/OVMF_CODE.fd  -boot $order -drive if=none,id=hd0,file=$disk -device virtio-scsi-pci,id=scsi0 -device scsi-hd,bus=scsi0.0,id=scsi0-0,drive=hd0 -netdev tap,id=network0,script=$ifup_script,downscript=$ifdown_script -device e1000,netdev=network0,mac=$ifmac -chardev socket,id=ipmi$vncport,host=$listen_addr,port=$ipmi_port,reconnect=10 -device ipmi-bmc-extern,id=bmc$vncport,chardev=ipmi$vncport -device isa-ipmi-bt,bmc=bmc$vncport -serial mon:telnet::$telnet_port,server,telnet,nowait -vnc :$vncport -daemonize --pidfile $cmd_pidfile -uuid $(uuidgen)"
     if [ -f $status_file ]; then
         sed -i "s@cmd: \(.*\)@cmd: $start_cmd@g" $status_file
         sed -i "s@order: \(.*\)@order: $order@g" $status_file

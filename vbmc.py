@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from virtbmc import optparse
 from virtbmc.optparse import get_args, get_parser

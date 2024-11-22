@@ -31,7 +31,7 @@ $ ls -alh /opt/qemu2.7/bin/
 $ export PATH=$PATH:/opt/qemu2.7/bin/
 
 # install python requirements
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ## Prepare
@@ -41,6 +41,8 @@ Before the emulation, we should create a bridge interface
 ```sh
 $ sudo brctl addbr br0
 $ sudo ip addr add 10.0.2.1/24 dev br0
+$ sudo ip addr add 10.0.2.2/24 dev br0
+$ sudo ip addr add 10.0.2.3/24 dev br0
 ```
 
 ## Usage
@@ -95,11 +97,11 @@ $ ./vbmc.py list --json
 ]
 
 # Power on or off the vm
-$ ipmitool -I lanplus -H 10.0.2.1 -p 9000 -U root -P test power on|off
+$ ipmitool -I lanplus -H 10.0.2.1 -U root -P test power on|off
 
 # Check the power status
-$ ipmitool -I lanplus -H 10.0.2.1 -p 9000 -U root -P test power status
+$ ipmitool -I lanplus -H 10.0.2.1 -U root -P test power status
 
 # Set the boot device to network, hd or cdrom
-$ ipmitool -I lanplus -H 10.0.2.1 -p 9000 -U root -P test -H 127.0.0.1 chassis bootdev pxe|disk|cdrom
+$ ipmitool -I lanplus -H 10.0.2.1 -U root -P test  chassis bootdev pxe|disk|cdrom
 ```
